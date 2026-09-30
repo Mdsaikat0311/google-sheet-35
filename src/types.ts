@@ -29,6 +29,7 @@ export interface Order {
   customerPhone: string;
   customerAddress: string;
   product: string; // Column E: e.g. "Golden Watch Combo"
+  columnG?: string; // Sheet2 Column G: e.g. "R", "PB"
   variant?: string; // Column H: e.g. "No Sellect", "Rose 599tk", "Doll and toys"
   source: string; // Column I: e.g. "Website", "Whatsapp", "Call Direct"
   amount: number; // Column D: Total COD amount in BDT

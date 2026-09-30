@@ -89,6 +89,7 @@ export default function App() {
         if (Array.isArray(parsed)) {
           const isDateLike = (str: string) => /^\d{1,4}[-/.]\d{1,2}[-/.]\d{2,4}$/.test(str.trim());
           const seen = new Set<string>();
+          const initialColGMap = new Map(INITIAL_ORDERS.map((init) => [init.id, init.columnG]));
           return parsed.map((o: Order, idx: number) => {
             let id = String(o.id || '').trim();
             if (!id || isDateLike(id) || seen.has(id)) {
@@ -98,7 +99,8 @@ export default function App() {
               id = `${id}-${idx + 1}`;
             }
             seen.add(id);
-            return { ...o, id };
+            const colG = o.columnG || initialColGMap.get(id) || (o.trackingCode ? initialColGMap.get(o.trackingCode) : undefined);
+            return { ...o, id, ...(colG ? { columnG: colG } : {}) };
           });
         }
       } catch (e) {}

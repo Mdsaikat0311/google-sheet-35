@@ -1048,8 +1048,13 @@ export const SteadfastView: React.FC<SteadfastViewProps> = ({
                         </div>
 
                         {/* Customer Name */}
-                        <span className="text-sm font-bold text-white tracking-tight truncate min-w-0 max-w-[105px] xs:max-w-[140px] sm:max-w-[190px]">
+                        <span className="text-sm font-bold text-white tracking-tight truncate min-w-0 max-w-[130px] xs:max-w-[170px] sm:max-w-[240px]">
                           {order.customerName || 'গ্রাহকের নাম নেই'}
+                          {order.columnG && (
+                            <span className="text-purple-300 font-mono ml-1 font-semibold">
+                              ({order.columnG})
+                            </span>
+                          )}
                         </span>
                       </div>
 
@@ -1238,8 +1243,13 @@ export const SteadfastView: React.FC<SteadfastViewProps> = ({
                     {/* Line 2: Customer Name on Left, Price on Right */}
                     <div className="mt-1.5 flex items-center justify-between gap-2 text-xs">
                       <div className="flex items-center gap-1.5 text-gray-400 font-medium flex-1 min-w-0 pr-1">
-                        <span className="text-sm sm:text-base font-bold text-white tracking-tight truncate shrink-0 max-w-[200px] sm:max-w-[320px]">
+                        <span className="text-sm sm:text-base font-bold text-white tracking-tight truncate shrink-0 max-w-[220px] sm:max-w-[340px]">
                           {order.customerName || 'গ্রাহকের নাম নেই'}
+                          {order.columnG && (
+                            <span className="text-purple-300 font-mono ml-1.5 font-semibold">
+                              ({order.columnG})
+                            </span>
+                          )}
                         </span>
                       </div>
 

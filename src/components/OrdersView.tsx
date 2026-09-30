@@ -844,6 +844,11 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                           )}
                           <span className="font-bold text-gray-100 text-sm sm:text-base truncate block">
                             {order.customerName || 'নামবিহীন'}
+                            {order.columnG && (
+                              <span className="text-purple-300 font-mono ml-1.5 font-semibold">
+                                ({order.columnG})
+                              </span>
+                            )}
                           </span>
                         </div>
 

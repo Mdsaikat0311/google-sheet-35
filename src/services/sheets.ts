@@ -1,7 +1,7 @@
 import { Product, Order, Sheet1ProductReport, ProductReportSource, Sheet3ProductEntry, Sheet4ProfitRow } from '../types';
 import appConfig from '../config/appConfig.json';
 
-export const DEFAULT_SPREADSHEET_ID = appConfig.spreadsheetId || '11pI2WGa6yr70R0Sf9jrTDaKlds754qH8oqw-XWS9yZ8';
+export const DEFAULT_SPREADSHEET_ID = appConfig.spreadsheetId || '1Mt_gbSR3p7hvTGgQ5fXq5MjlECwbKiQGfwPvRkOIXVo';
 
 export const extractSpreadsheetId = (input: string): string => {
   const trimmed = input.trim();
@@ -359,7 +359,7 @@ export const appendSheetOrder = async (
     Number(order.amount ?? order.total ?? 0) || 0, // Column D: COD / Price
     order.product || 'Standard Item', // Column E: Product
     order.customerName || '', // Column F: Customer Name
-    '', // Column G: Empty
+    order.columnG || '', // Column G: Column G text
     order.variant || 'Rose 599tk', // Column H: Variant
     order.source || 'Website', // Column I: Source
     order.status || 'Pending', // Column J: Status
@@ -419,6 +419,7 @@ export const fetchOrdersViaAppsScript = async (
           customerPhone: cleanPhone,
           customerAddress: cleanAddr,
           product: o.product || 'Standard Product',
+          columnG: String(o.g || o.col_g || o.column_g || o.columnG || o.g_column || o.colG || '').trim() || undefined,
           variant: o.selected_product || 'No Sellect',
           source: o.source || 'Website',
           amount: Number(o.cod) || 0,
@@ -642,6 +643,8 @@ export const fetchPublicSheetOrders = async (
             }
 
             const prodVal = (productCol !== -1 && row[productCol]) ? row[productCol] : (row[4] || row[7] || 'পণ্য');
+            const colGIndex = cols.findIndex((h: string) => h === 'g' || /^col.*g$/i.test(h) || /^column.*g$/i.test(h));
+            const colGVal = String((colGIndex !== -1 && row[colGIndex]) ? row[colGIndex] : (row[6] || '')).trim();
             const variantVal = (variantCol !== -1 && row[variantCol]) ? row[variantCol] : (row[7] || 'No Sellect');
             const sourceVal = (sourceCol !== -1 && row[sourceCol]) ? row[sourceCol] : (row[8] || 'Website');
             const statusVal = (statusCol !== -1 && row[statusCol]) ? row[statusCol] : (row[9] || 'Pending');
@@ -674,6 +677,7 @@ export const fetchPublicSheetOrders = async (
               customerPhone: phoneVal,
               customerAddress: addrVal,
               product: prodVal,
+              columnG: colGVal || undefined,
               variant: variantVal || 'No Sellect',
               source: sourceVal || 'Website',
               amount: priceVal,
@@ -899,6 +903,10 @@ export const getSheetOrders = async (
         ? String(r[addressCol]).trim()
         : String(r[1] || '').trim();
 
+      // Column G: Text (e.g. 'R', 'PB', etc.)
+      const colGCol = headers.findIndex(h => h === 'g' || /^col.*g$/i.test(h) || /^column.*g$/i.test(h));
+      const colGVal = colGCol !== -1 ? String(r[colGCol] || '').trim() : String(r[6] || '').trim();
+
       // Intelligent fallback: If Column C is empty, but Column B contains only digits (like row 6)
       if (!phoneVal && /^\+?\d{10,14}$/.test(addrVal.replace(/\s+/g, ''))) {
         phoneVal = addrVal.replace(/\s+/g, '');
@@ -950,6 +958,7 @@ export const getSheetOrders = async (
         customerPhone: phoneVal,
         customerAddress: addrVal,
         product: prodVal || 'Golden Watch Combo',
+        columnG: colGVal || undefined,
         variant: variantVal || 'No Sellect',
         source: sourceVal || 'Website',
         amount: parsedAmt,
@@ -1198,7 +1207,7 @@ export const verifyNewOrderInSheet = async (
   return { verified: false };
 };
 
-export const DEFAULT_APPS_SCRIPT_URL = appConfig.appsScriptUrl || 'https://script.google.com/macros/s/AKfycbz2d-zKPTuqpSndp2zw-vjlXyEDbFSK-bwbkBdyXfXlk8PwzNuhp5ytIzowXTHkP_smBw/exec';
+export const DEFAULT_APPS_SCRIPT_URL = appConfig.appsScriptUrl || 'https://script.google.com/macros/s/AKfycbxMRclYJPcwLfyqNsGkMJoC-foY321YO9V-WBRJnCT2dNsOZHxDpEEPt6MBqTNDBP6iUg/exec';
 
 export const getAppsScriptUrl = (): string => {
   if (typeof window !== 'undefined') {
